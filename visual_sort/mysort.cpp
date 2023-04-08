@@ -1,28 +1,40 @@
 #include "mysort.h"
 
-void MySort::Init()
+MySort::MySort(int radius, QString name, QString desc, int _type, QWidget *parent) :
+    QWidget(parent),
+    sortName(name),
+    sortDescription(desc),
+    type(_type)
 {
-    cntlWidget = new QWidget(this);
-    mainLayout->addWidget(cntlWidget);
-    mainLayout->setStretch(0, 1);
-//    mainLayout->setStretch(1, 0);
-    cntlWidget->setFixedWidth(250);
+    mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(mainLayout);
+    sortCanvas = new MainCanvas();
+    sortCanvas->setStyleSheet("background-color: #FFFFFF;border:1px solid #cfcfcf;border-radius:10px;");
 
-    contentContainer * control = new contentContainer("CONTROL", cntlWidget);
-    textInputItem *num = new textInputItem("The number of items", control);
-    horizontalValueAdjuster *aniSpeed = new horizontalValueAdjuster("Animation speed", 1, 200, 1, control);
-    textButton *strtBtn = new textButton("Start", cntlWidget);
-    textButton *stopBtn = new textButton("END", "#0acb1b45","#1acb1b45","#2acb1b45", cntlWidget);
+    mainLayout->addWidget(sortCanvas);
 
-    control->AddContent(num);
-    control->AddContent(aniSpeed);
-    control->AddContent(strtBtn);
-    control->AddContent(stopBtn);
+    this->setFocusPolicy(Qt::ClickFocus);
 
-//    QVBoxLayout * cntlLayout = new QVBoxLayout(cntlWidget);
-//    cntlWidget->setLayout(cntlLayout);
-//    cntlLayout->setContentsMargins(10, 0, 0, 0);
-//    cntlLayout->setAlignment(Qt::AlignTop);
+    CreateSettings(radius);
+}
+
+MySort::MySort(QTextStream &ts, int radius, QWidget *parent) :
+    QWidget(parent)
+{
+    sortName = ts.readLine();
+    sortDescription = ts.readLine();
+    ts >> type;
+
+    mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(mainLayout);
+    sortCanvas = new MainCanvas();
+    mainLayout->addWidget(sortCanvas);
+
+    this->setFocusPolicy(Qt::ClickFocus);
+
+    CreateSettings(radius);
 }
 
 void MySort::CreateSettings(int r)
@@ -67,38 +79,46 @@ void MySort::CreateSettings(int r)
     delay->start(10);
 }
 
-MySort::MySort(int radius, QString name, QString desc, int _type, QWidget *parent) :
-    QWidget(parent),
-    sortName(name),
-    sortDescription(desc),
-    type(_type)
+void MySort::Init()
 {
-    mainLayout = new QHBoxLayout(this);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    this->setLayout(mainLayout);
-    sortCanvas = new MainCanvas();
-    mainLayout->addWidget(sortCanvas);
+    cntlWidget = new QWidget(this);
+    mainLayout->addWidget(cntlWidget);
+    mainLayout->setStretch(0, 1);
+//    mainLayout->setStretch(1, 3);
+    cntlWidget->setFixedWidth(250);
+//    cntlWidget->setFixedWidth(500);
 
-    this->setFocusPolicy(Qt::ClickFocus);
+    QVBoxLayout *cntlLayout = new QVBoxLayout(cntlWidget);
+    cntlWidget->setLayout((cntlLayout));
+    cntlLayout->setContentsMargins(10, 0, 0, 0);
+    cntlLayout->setAlignment(Qt::AlignTop);
 
-    CreateSettings(radius);
+    contentContainer * control = new contentContainer("CONTROL", cntlWidget);
+    textInputItem *num = new textInputItem("Amount", control);
+    horizontalValueAdjuster *aniSpeed = new horizontalValueAdjuster("Animation speed", 1, 199, 1, control);
+    textButton *strtBtn = new textButton("Start", cntlWidget);
+    textButton *stopBtn = new textButton("END", "#0acb1b45","#1acb1b45","#2acb1b45", cntlWidget);
+
+    QWidget *whiteSpace = new QWidget(this);
+
+
+    control->AddContent(num);
+    control->AddContent(aniSpeed);
+    control->AddContent(strtBtn);
+    control->AddContent(stopBtn);
+    cntlLayout->addWidget(control);
+    cntlLayout->addWidget(whiteSpace);
+    cntlLayout->setStretch(1,1);
+
+//    cntlWidget->show();
+
+//    QVBoxLayout * cntlLayout = new QVBoxLayout(cntlWidget);
+//    cntlWidget->setLayout(cntlLayout);
+//    cntlLayout->setContentsMargins(10, 0, 0, 0);
+//    cntlLayout->setAlignment(Qt::AlignTop);
 }
 
-MySort::MySort(QTextStream &ts, int radius, QWidget *parent) :
-    QWidget(parent)
-{
-    sortName = ts.readLine();
-    sortDescription = ts.readLine();
-    ts >> type;
 
-    mainLayout = new QHBoxLayout(this);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    this->setLayout(mainLayout);
-    sortCanvas = new MainCanvas();
-    mainLayout->addWidget(sortCanvas);
 
-    this->setFocusPolicy(Qt::ClickFocus);
 
-    CreateSettings(radius);
-}
 
